@@ -3,100 +3,225 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <title>Assignment Solution for Module 2</title>
+    <title>Assignment Solution for Module 3</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="index.html">Food, LLC</a>
-      <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>-->
-
-      <div class="dropdown dropdown d-sm-none d-inline">
-        <a class="btn btn-secondary dropdown-toggle" href="#"
-          id="dropdownMenuLink" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-            <hr>
-            <hr>
-            <hr>
-        </a>
-
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="#">Chicken</a>
-          <a class="dropdown-item" href="#">Beef</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Sushi</a>
-        </div>
+    <nav id="navbar">
+      <div>
+        <a id="navbar-brand" href="index.html"><h1>Food, LLC</h1></a>
       </div>
 
-<!--
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-      </div>-->
+      <button id="nav-button" onclick="openNav()">
+        <div class="menu-icon"></div>
+        <div class="menu-icon"></div>
+        <div class="menu-icon"></div>
+      </button>
+
     </nav>
 
-    <p class="header">Our Menu</p>
-    <section id="section1">
-      <div id="chicken">
-        Chicken
-      </div>
-      <p class="dummy">
-        The most common type of poultry in the world. Owing to the relative
-        ease and low cost of raising chickens—in comparison to mammals such as
-        cattle or hogs—chicken meat and chicken eggs have become prevalent in
-        numerous cuisines.
-      </p>
-    </section>
-    <section id="section2">
-      <div id="beef">
-        Beef
-      </div>
-      <p class="dummy">
-        The culinary name for meat from cattle (Bos taurus). An uncooked rib
-        roast · Wagyu cattle are an example of a breed raised primarily for beef.
-      </p>
-    </section>
-    <section id="section3">
-      <div id="sushi">
-        Sushi
-      </div>
-      <p class="dummy">
-        A Japanese dish of prepared vinegared rice, usually with some sugar and
-        salt, accompanied by a variety of ingredients, such as seafood, often
-        raw, and vegetables. Styles of sushi and its presentation vary widely,
-        but the one key ingredient is "sushi rice", also referred to as shari,
-        or sumeshi.
-      </p>
-    </section>
-    <script src="js/bootstrap.bundle.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <!--<script src="js/script.js"></script>-->
+    <div id="mySidebar" class="sidebar">
+      <a class="text-center" href="#section1">Chicken</a>
+      <hr>
+      <a class="text-center" href="#section2">Beef</a>
+      <hr>
+      <a class="text-center" href="#section3">Sushi</a>
+    </div>
+
+    <h2 class="header text-center">Our Menu</h2>
+
+    <div class="container">
+      <section id="section1">
+        <h4 class="text-center" id="chicken">
+          Chicken
+        </h4>
+        <p class="dummy">
+          The most common type of poultry in the world. Owing to the relative
+          ease and low cost of raising chickens—in comparison to mammals such as
+          cattle or hogs—chicken meat and chicken eggs have become prevalent in
+          numerous cuisines.
+          <br><br>
+          Chicken can be prepared in a vast range of ways, including baking,
+          grilling, barbecuing, frying, and boiling. Since the latter half of
+          the 20th century, prepared chicken has become a staple of fast food.
+          Chicken is sometimes cited as being more healthful than red meat, with
+          lower concentrations of cholesterol and saturated fat.
+          <br><br>
+          The poultry farming industry that accounts for chicken production
+          takes on a range of forms across different parts of the world. In
+          developed countries, chickens are typically subject to intensive
+          farming methods while less-developed areas raise chickens using more
+          traditional farming techniques. The United Nations estimates there to
+          be 19 billion chickens on Earth today, making them outnumber humans
+          more than two to one.
+          <br><br>
+          The modern chicken is a descendant of red junglefowl hybrids along
+          with the grey junglefowl first raised thousands of years ago in the
+          northern parts of the Indian subcontinent.
+          <br><br>
+          Chicken as a meat has been depicted in Babylonian carvings from around
+          600 BC.[5] Chicken was one of the most common meats available in the
+          Middle Ages. For thousands of years, a number of different kinds of
+          chicken have been eaten across most of the Eastern hemisphere,
+          including capons, pullets, and hens. It was one of the basic
+          ingredients in blancmange, a stew usually consisting of chicken and
+          fried onions cooked in milk and seasoned with spices and sugar.
+          <br><br>
+          In the United States in the 1800s, chicken was more expensive than
+          other meats and it was "sought by the rich because [it is] so costly
+          as to be an uncommon dish." Chicken consumption in the U.S. increased
+          during World War II due to a shortage of beef and pork.[11] In Europe,
+          consumption of chicken overtook that of beef and veal in 1996, linked
+          to consumer awareness of Bovine spongiform encephalopathy (mad cow
+          disease).
+          <br><br>
+          Modern varieties of chicken such as the Cornish Cross, are bred
+          specifically for meat production, with an emphasis placed on the ratio
+          of feed to meat produced by the animal. The most common breeds of
+          chicken consumed in the U.S. are Cornish and White Rock.
+          <br><br>
+          Chickens raised specifically for food are called broilers. In the U.S.,
+          broilers are typically butchered at a young age. Modern Cornish Cross
+          hybrids, for example, are butchered as early as 8 weeks for fryers and
+          12 weeks for roasting birds.
+          <br><br>
+          Capons (castrated cocks) produce more and fattier meat. For this
+          reason, they are considered a delicacy and were particularly popular
+          in the Middle Ages.
+          <br><br>
+          Chicken meat contains about two to three times as much polyunsaturated
+          fat as most types of red meat when measured as weight percentage.
+          <br><br>
+          Chicken generally includes low fat in the meat itself (castrated
+          roosters excluded). The fat is highly concentrated on the skin. A 100g
+          serving of baked chicken breast contains 4 grams of fat and 31 grams
+          of protein, compared to 10 grams of fat and 27 grams of protein for
+          the same portion of broiled, lean skirt steak.
+          <br><br>
+          In factory farming, chickens are routinely administered with the feed
+          additive Roxarsone, an organoarsenic compound which partially
+          decomposes into inorganic arsenic compounded in the flesh of chickens,
+          and in their feces, which are often used as a fertilizer. The compound
+          is used to control stomach pathogens and promote growth. In a 2013
+          sample conducted by the Johns Hopkins School of Public Health of
+          chicken meat from poultry producers that did not prohibit roxarsone,
+          70% of the samples in the US had levels which exceeded the safety
+          limits as set by the FDA.[23] The FDA has since revised its stance on
+          safe limits to inorganic arsenic in animal feed by stating that "any
+          new animal drug that contributes to the overall inorganic arsenic
+          burden is of potential concern".
+          <br><br>
+          Information obtained by the Canadian Integrated Program for
+          Antimicrobial Resistance (CIPARS) "strongly indicates that
+          cephalosporin resistance in humans is moving in lockstep with the use
+          of the drug in poultry production". According to the Canadian Medical
+          Association Journal, the unapproved antibiotic ceftiofur is routinely
+          injected into eggs in Quebec and Ontario to discourage infection of
+          hatchlings. Although the data are contested by the industry,
+          antibiotic resistance in humans appears to be directly related to the
+          antibiotic's use in eggs.
+          <br><br>
+          A recent study by the Translational Genomics Research Institute showed
+          that nearly half (47%) of the meat and poultry in US grocery stores
+          was contaminated with S. aureus, with more than half (52%) of those
+          bacteria resistant to antibiotics. Furthermore, as per the FDA, more
+          than 25% of retail chicken is resistant to 5 or more different
+          classes of antibiotic treatment drugs in the United States. An
+          estimated 90–100% of conventional chicken contains, at least, one form
+          of antibiotic resistance microorganism, while organic chicken has been
+          found to have a lower incidence at 84%.
+          <br><br>
+          This section needs additional citations for verification. Please help
+          improve this article by adding citations to reliable sources.
+          Unsourced material may be challenged and removed. (July 2021) (Learn
+          how and when to remove this template message)
+          <br><br>
+          In random surveys of chicken products across the United States in 2012,
+          the Physicians Committee for Responsible Medicine found 48% of samples
+          to contain fecal matter. On most commercial chicken farms, the
+          chickens spend their entire life standing in, lying on, and living in
+          their own manure, which is somewhat mixed in with the bedding material
+          (e.g., sawdust, wood shavings, chopped straw, etc.).
+          <br><br>
+          During shipping from the concentrated animal feeding operation farm to
+          the abattoir, the chickens are usually placed inside shipping crates
+          that usually have slatted floors. Those crates are then piled 5 to 10
+          rows high on the transport truck to the abattoir. During shipment, the
+          chickens tend to defecate, and that chicken manure tends to sit inside
+          the crowded cages, contaminating the feathers and skin of the chickens,
+          or rains down upon the chickens and crates on the lower levels of the
+          transport truck. By the time the truck gets to the abattoir, most
+          chickens have had their skin and feathers contaminated with feces.
+          <br><br>
+          There is also fecal matter in the intestines. While the slaughter
+          process removes the feathers and intestines, only visible fecal matter
+          is removed. The high speed automated processes at the abattoir are not
+          designed to remove this fecal contamination on the feather and skin.
+          The high speed processing equipment tend to spray the contamination
+          around to the birds going down the processing line, and the equipment
+          on the line itself. At one or more points on most abattoirs, chemical
+          sprays and baths (e.g., bleach, acids, peroxides, etc.) are used to
+          partially rinse off or kill this bacterial contamination.
+          Unfortunately, the fecal contamination, once it has occurred,
+          especially in the various membranes between the skin and muscle, is
+          impossible to completely remove.
+          <br><br>
+          With slaughter lines processing up to 140 birds per minute, safety
+          inspectors do not have adequate time to properly examine visible fecal
+          matter. The USDA is currently allowing some abattoirs to process at
+          unlimited line speeds (i.e., in excess of 140 birds per minute),
+          further exacerbating the fecal contamination issue.
+        </p>
+      </section>
+      <section id="section2">
+        <h4 class="text-center" id="beef">
+          Beef
+        </h4>
+        <p class="dummy">
+          The culinary name for meat from cattle (Bos taurus). An uncooked rib
+          roast · Wagyu cattle are an example of a breed raised primarily for
+          beef.
+          <br><br>
+          Beef can be prepared in various ways; cuts are often used for steak,
+          which can be cooked to varying degrees of doneness, while trimmings
+          are often ground or minced, as found in most hamburgers. Beef contains
+          protein, iron, and vitamin B12. Along with other kinds of red meat,
+          high consumption is associated with an increased risk of colorectal
+          cancer and coronary heart disease, especially when processed. Beef has
+          a high environmental impact, being a primary driver of deforestation
+          with the highest greenhouse gas emissions of any agricultural product.
+        </p>
+      </section>
+      <section id="section3">
+        <h4 class="text-center" id="sushi">
+          Sushi
+        </h4>
+        <p class="dummy">
+          A Japanese dish of prepared vinegared rice, usually with some sugar and
+          salt, accompanied by a variety of ingredients, such as seafood, often
+          raw, and vegetables. Styles of sushi and its presentation vary widely,
+          but the one key ingredient is "sushi rice", also referred to as shari,
+          or sumeshi.
+          <br><br>
+          The inventor of modern sushi is believed to be Hanaya Yohei, who
+          invented nigiri-zushi, a type of sushi most known today, in which
+          seafood is placed on hand-pressed vinegared rice, around 1824 in the
+          Edo period (1603–1867). It was the fast food of the chōnin class in
+          the Edo period.
+          <br><br>
+          Sushi is traditionally made with medium-grain white rice, though it
+          can be prepared with brown rice or short-grain rice. It is very often
+          prepared with seafood, such as squid, eel, yellowtail, salmon, tuna or
+          imitation crab meat. Many types of sushi are vegetarian. It is often
+          served with pickled ginger (gari), wasabi, and soy sauce. Daikon
+          radish or pickled daikon (takuan) are popular garnishes for the dish.
+          <br><br>
+          Sushi is sometimes confused with sashimi, a related dish in Japanese
+          cuisine that consists of thinly sliced raw fish or occasionally meat.
+        </p>
+      </section>
+    </div>
+
+    <script src="js/script.js"></script>
   </body>
 </html>

@@ -2,38 +2,109 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-hr {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-  color: black;
-  opacity: 1;
-}
-
-.dropdown-toggle::after {
-  opacity: 0;
-}
-
-/*
-.header {
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 45px;
-  font-size: 1.75em;
   font-family: sans-serif;
-  font-weight: bold;
+}
+
+#navbar {
+  border-bottom: 2px solid black;
+  min-height: 60px;
+  background-color: grey;
+}
+
+#navbar-brand,
+#navbar-brand:visited,
+#navbar-brand:hover,
+#navbar-brand:active {
+  text-decoration: none;
+  color: black;
+  float: left;
+  padding: 16px 30px;
+}
+
+#nav-button {
+  height: 40px;
+  width: 40px;
+  float: right;
+  line-height: 0.25em;
+  background: grey;
+  padding: 3px 6px 2px 6px;
+  margin: 8px 10px;
+  border: 1px solid black;
+  border-radius: 7px;
+}
+
+/*#nav-button:hover {
+  background-color: lightgrey;
+}*/
+
+.menu-icon {
+  width: 27px;
+  height: 5px;
+  background: black;
+  margin: 4px 0;
+}
+
+.sidebar {
+  height: 0;
+  width: 100%;
+  background-color: lightgrey;
+  overflow-y: hidden;
+  transition: 0.5s;
+  border: 1px solid black;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 16px;
+  color: black;
+  display: block;
+  transition: 0.3s;
+  line-height: 14px;
+}
+
+.sidebar a:hover {
+  color: grey;
+}
+
+.header {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 1.5em;
 }
 
 section {
   position: relative;
-  border: 1px solid black;
-  background: lightgrey;
-  margin: 1.5% 2.5% 1.5% 2.5%;
+  background: grey;
+  margin: 5% 10%;
   min-height: 140px;
   float: left;
 }
 
+h4 {
+  margin-top: 10px;
+}
+
+.dummy {
+  margin: 20px;
+}
+
+@media screen and (min-width: 576px) {
+  #nav-button {
+    display: none;
+  }
+  section {
+    margin: 0.75% 1%;
+  }
+  .header {
+    margin-bottom: 30px;
+  }
+}
+/*
 div {
   text-align: center;
   float: right;
