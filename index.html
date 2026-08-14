@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -10,125 +11,224 @@
 
   <title>Andreo</title>
 
-	<script>
-(function () {
 
-  const meta = document.querySelector('meta[name="viewport"]');
+  <!-- =========================================================
+       VIEWPORT RECOVERY
+       =========================================================
 
-  if (!meta) return;
+       Attempts to correct the iOS Safari 980px viewport issue.
 
-  const normalViewport =
-    'width=device-width, initial-scale=1, viewport-fit=cover';
+       Your iPhone has previously reported:
 
-  const brokenViewport =
-    'width=device-width, initial-scale=1';
+         innerWidth: 980
+         screen.width: 390
 
-  function viewportIsBroken() {
-    return window.innerWidth > screen.width * 1.5;
-  }
+       This script detects that mismatch and asks Safari to
+       recalculate the viewport.
+       ========================================================= -->
 
-  function recoverViewport() {
+  <script>
 
-    if (!viewportIsBroken()) {
-      return;
+  (function () {
+
+    const meta =
+      document.querySelector(
+        'meta[name="viewport"]'
+      );
+
+    if (!meta) return;
+
+
+    const normalViewport =
+      'width=device-width, initial-scale=1, viewport-fit=cover';
+
+
+    const recoveryViewport =
+      'width=device-width, initial-scale=1';
+
+
+    function viewportIsBroken() {
+
+      return (
+        window.innerWidth >
+        screen.width * 1.5
+      );
+
     }
 
-    /*
-     * Force Safari to rebuild the viewport.
-     */
 
-    meta.setAttribute(
-      'content',
-      brokenViewport
-    );
+    function forceViewportRecovery() {
 
-    /*
-     * Force a layout/reflow.
-     */
+      /*
+       * Nothing to do if the viewport is already normal.
+       */
 
-    void document.documentElement.offsetHeight;
+      if (!viewportIsBroken()) {
+        return;
+      }
 
-    /*
-     * Restore the full viewport declaration.
-     */
 
-    setTimeout(function () {
+      /*
+       * -------------------------------------------------------
+       * STEP 1
+       *
+       * Temporarily simplify the viewport declaration.
+       * -------------------------------------------------------
+       */
 
       meta.setAttribute(
         'content',
-        normalViewport
+        recoveryViewport
       );
 
+
       /*
-       * Force another layout/reflow.
+       * Force Safari to perform a layout.
        */
 
       void document.documentElement.offsetHeight;
 
-    }, 100);
 
-  }
+      /*
+       * -------------------------------------------------------
+       * STEP 2
+       *
+       * Restore the normal viewport declaration.
+       * -------------------------------------------------------
+       */
 
+      setTimeout(function () {
 
-  /*
-   * Try immediately.
-   */
-
-  recoverViewport();
-
-
-  /*
-   * Try again after Safari has completed
-   * its initial page layout.
-   */
-
-  setTimeout(
-    recoverViewport,
-    250
-  );
+        meta.setAttribute(
+          'content',
+          normalViewport
+        );
 
 
-  setTimeout(
-    recoverViewport,
-    1000
-  );
+        /*
+         * Force another layout.
+         */
+
+        void document.documentElement.offsetHeight;
 
 
-  /*
-   * Safari sometimes develops the problem
-   * after returning from the background.
-   */
+        /*
+         * -----------------------------------------------------
+         * STEP 3
+         *
+         * Check whether Safari actually recovered.
+         * -----------------------------------------------------
+         */
 
-  document.addEventListener(
-    'visibilitychange',
-    function () {
+        setTimeout(function () {
 
-      if (
-        document.visibilityState === 'visible'
-      ) {
+          if (viewportIsBroken()) {
+
+            /*
+             * Safari did not recover.
+             *
+             * Try the process once more.
+             */
+
+            meta.setAttribute(
+              'content',
+              recoveryViewport
+            );
+
+
+            void document.documentElement.offsetHeight;
+
+
+            setTimeout(function () {
+
+              meta.setAttribute(
+                'content',
+                normalViewport
+              );
+
+
+              void document.documentElement.offsetHeight;
+
+            }, 100);
+
+          }
+
+        }, 100);
+
+      }, 100);
+
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * INITIAL ATTEMPTS
+     * ---------------------------------------------------------
+     */
+
+    setTimeout(
+      forceViewportRecovery,
+      50
+    );
+
+    setTimeout(
+      forceViewportRecovery,
+      300
+    );
+
+    setTimeout(
+      forceViewportRecovery,
+      1000
+    );
+
+
+    /*
+     * ---------------------------------------------------------
+     * SAFARI BACKGROUND / FOREGROUND
+     * ---------------------------------------------------------
+     */
+
+    document.addEventListener(
+      'visibilitychange',
+      function () {
+
+        if (
+          document.visibilityState === 'visible'
+        ) {
+
+          setTimeout(
+            forceViewportRecovery,
+            100
+          );
+
+        }
+
+      }
+    );
+
+
+    /*
+     * ---------------------------------------------------------
+     * RESIZE
+     * ---------------------------------------------------------
+     */
+
+    window.addEventListener(
+      'resize',
+      function () {
 
         setTimeout(
-          recoverViewport,
-          100
+          forceViewportRecovery,
+          50
         );
 
       }
+    );
 
-    }
-  );
+  })();
 
+  </script>
 
-  /*
-   * Also respond to viewport changes.
-   */
-
-  window.addEventListener(
-    'resize',
-    recoverViewport
-  );
-
-})();
-</script>
 
   <style>
 
@@ -143,6 +243,7 @@
          ------------------------------------------------------- */
 
       --background: #f5f3ee;
+
       --text: #111111;
 
 
@@ -255,10 +356,6 @@
       --content-transition:
         700ms ease;
 
-      /*
-        How slowly the menu fades back in on mobile.
-      */
-
       --menu-return-fade:
         700ms ease;
 
@@ -270,7 +367,8 @@
        ========================================================= */
 
     * {
-      box-sizing: border-box;
+      box-sizing:
+        border-box;
     }
 
 
@@ -328,15 +426,6 @@
 
     /* =========================================================
        CONTENT PAGE
-       =========================================================
-
-       Desktop:
-         fades in.
-
-       Mobile:
-         enters from the right.
-
-       The layer sits underneath the menu and title.
        ========================================================= */
 
     .content-page {
@@ -386,10 +475,6 @@
     }
 
 
-    /* ---------------------------------------------------------
-       ACTIVE CONTENT
-       --------------------------------------------------------- */
-
     .content-page.active {
 
       opacity:
@@ -403,9 +488,9 @@
     }
 
 
-    /* ---------------------------------------------------------
+    /* =========================================================
        CONTENT WIDTH
-       --------------------------------------------------------- */
+       ========================================================= */
 
     .content-inner {
 
@@ -495,10 +580,6 @@
 
       background:
         transparent;
-
-      /*
-        DOUBLE THE ORIGINAL PADDING
-      */
 
       padding:
         var(--menu-padding-vertical)
@@ -651,9 +732,6 @@
 
     /* =========================================================
        BACK ARROW
-       =========================================================
-
-       Hidden on desktop.
        ========================================================= */
 
     .back-button {
@@ -730,10 +808,6 @@
         align-items:
           flex-start;
 
-        /*
-          Used when initially leaving the page.
-        */
-
         transition:
           transform var(--menu-transition),
           opacity var(--menu-transition);
@@ -751,9 +825,7 @@
       }
 
 
-      /*
-        No blue rhombus on mobile.
-      */
+      /* No blue rhombus on mobile */
 
       .menu button.selected {
 
@@ -790,14 +862,6 @@
 
       /* =======================================================
          MOBILE MENU — FADE BACK IN
-         =======================================================
-
-         IMPORTANT:
-
-         There is deliberately NO transform here.
-
-         The menu returns to its normal position first,
-         then fades from invisible → visible.
          ======================================================= */
 
       .menu.menu-fading-in {
@@ -878,12 +942,6 @@
           var(--mobile-content-padding-right)
           var(--mobile-content-padding-bottom)
           var(--mobile-content-padding-left);
-
-
-        /*
-          INITIAL POSITION:
-          outside viewport on the RIGHT.
-        */
 
         transform:
           translateX(100%);
@@ -1030,10 +1088,106 @@
     }
 
   </style>
+
 </head>
 
 
 <body>
+
+
+  <!-- =========================================================
+       CLEAN VIEWPORT DEBUGGER
+       =========================================================
+
+       TEMPORARY.
+
+       This appears for 5 seconds after loading and shows the
+       viewport values Safari is actually reporting.
+
+       DELETE THIS ENTIRE SCRIPT once the problem is diagnosed.
+       ========================================================= -->
+
+  <script>
+
+  setTimeout(function () {
+
+    const debug =
+      document.createElement('div');
+
+
+    debug.id =
+      'viewport-debug';
+
+
+    debug.innerHTML =
+
+      'innerWidth: ' +
+      window.innerWidth +
+
+      '<br>' +
+
+      'innerHeight: ' +
+      window.innerHeight +
+
+      '<br>' +
+
+      'screen.width: ' +
+      screen.width +
+
+      '<br>' +
+
+      'screen.height: ' +
+      screen.height +
+
+      '<br>' +
+
+      'devicePixelRatio: ' +
+      window.devicePixelRatio +
+
+      '<br>' +
+
+      'CSS mobile: ' +
+      window.matchMedia(
+        '(max-width: 768px)'
+      ).matches;
+
+
+    debug.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 99999;
+      background: rgba(255,255,255,0.95);
+      color: #000;
+      padding: 10px;
+      font: 13px/1.5 monospace;
+      border: 1px solid #000;
+      pointer-events: none;
+    `;
+
+
+    document.body.appendChild(
+      debug
+    );
+
+
+    /*
+     * Automatically remove the diagnostic
+     * after 10 seconds.
+     */
+
+    setTimeout(function () {
+
+      debug.remove();
+
+    }, 10000);
+
+
+  }, 1500);
+
+  </script>
+
+
 
   <main class="page">
 
@@ -1111,40 +1265,67 @@
   </main>
 
 
+
   <script>
 
 
     /* =========================================================
        CONTENT
-       =========================================================
-
-       Replace these examples with your actual content.
-
-       HTML is allowed inside each section.
        ========================================================= */
 
     const contentData = {
 
+
       about: `
+
         <font color="777777">
-	<p>
-	Violinist on Ngunnawal country.
-	</p>
 
         <p>
-	After 15+ years experience in commercial music performance&mdash;from the <i>Bee Gees</i> to <i>The Phantom of the Opera</i> and 2 years touring with a <a href="https://youtu.be/fy7F1f_sO3E?si=gW0SHWK7OhuGrkbL" target="_blank" rel="noopener noreferrer" style="color: grey;">pop rock band</a>, to countless corporate events and television appearances (inc. one for <i>Netflix</i>)&mdash;</font>I am now <b>primarily seeking creative alignment</b>.
+        Violinist on Ngunnawal country.
         </p>
 
-	<p>
-	<font color="777777">Currently, my interest is in soul, rock, electronic, experimental, world, folk, R&B and metal.</font>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	</p>
+
+        <p>
+
+        After 15+ years experience in commercial
+        music performance&mdash;from the
+        <i>Bee Gees</i> to
+        <i>The Phantom of the Opera</i>
+        and 2 years touring with a
+        <a
+          href="https://youtu.be/fy7F1f_sO3E?si=gW0SHWK7OhuGrkbL"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="color: grey;"
+        >
+          pop rock band
+        </a>,
+
+        to countless corporate events and
+        television appearances
+        (inc. one for <i>Netflix</i>)&mdash;
+
+        </font>
+
+        I am now
+        <b>primarily seeking creative alignment</b>.
+
+        </p>
+
+
+        <p>
+
+        <font color="777777">
+
+        Currently, my interest is in soul, rock,
+        electronic, experimental, world, folk,
+        R&amp;B and metal.
+
+        </font>
+
+        <br><br><br><br><br><br><br>
+
+        </p>
 
       `,
 
@@ -1152,20 +1333,22 @@
       work: `
 
         <p>
-	TBD
+        TBD
         </p>
 
       `,
 
 
       contact: `
+
         <p>
         hello@andreo.com.au
         </p>
 
-	<p>
-	@helloandreo
-	</p>
+        <p>
+        @helloandreo
+        </p>
+
       `
 
     };
@@ -1177,45 +1360,62 @@
 
     const menu =
       document.getElementById(
-        "menu"
+        'menu'
       );
+
 
     const menuButtons =
       document.querySelectorAll(
-        ".menu button"
+        '.menu button'
       );
+
 
     const contentPage =
       document.getElementById(
-        "contentPage"
+        'contentPage'
       );
+
 
     const content =
       document.getElementById(
-        "content"
+        'content'
       );
+
 
     const backButton =
       document.getElementById(
-        "backButton"
+        'backButton'
       );
 
 
     /* =========================================================
        MOBILE DETECTION
+       =========================================================
+
+       Uses both CSS viewport width and physical screen width.
+
+       This protects the menu system if Safari temporarily
+       reports the 980px viewport.
        ========================================================= */
 
     function isMobile() {
 
-  const cssMobile =
-    window.matchMedia("(max-width: 768px)").matches;
+      const cssMobile =
+        window.matchMedia(
+          '(max-width: 768px)'
+        ).matches;
 
-  const physicalMobile =
-    screen.width <= 768;
 
-  return cssMobile || physicalMobile;
+      const physicalMobile =
+        screen.width <= 768;
 
-}
+
+      return (
+        cssMobile ||
+        physicalMobile
+      );
+
+    }
 
 
     /* =========================================================
@@ -1228,10 +1428,6 @@
     ) {
 
 
-      /*
-        Insert requested content.
-      */
-
       content.innerHTML =
         contentData[section];
 
@@ -1243,38 +1439,24 @@
       if (!isMobile()) {
 
 
-        /*
-          Remove previous selection.
-        */
-
         menuButtons.forEach(
           button => {
 
             button.classList.remove(
-              "selected"
+              'selected'
             );
 
           }
         );
 
 
-        /*
-          Select clicked item.
-
-          This activates the blue rhombus.
-        */
-
         selectedButton.classList.add(
-          "selected"
+          'selected'
         );
 
 
-        /*
-          Fade content in.
-        */
-
         contentPage.classList.add(
-          "active"
+          'active'
         );
 
       }
@@ -1287,33 +1469,21 @@
       else {
 
 
-        /*
-          Make sure any previous return state is gone.
-        */
-
         menu.classList.remove(
-          "menu-fading-in"
+          'menu-fading-in'
         );
 
-
-        /*
-          Menu leaves to the LEFT.
-        */
 
         menu.classList.add(
-          "mobile-hidden"
+          'mobile-hidden'
         );
 
-
-        /*
-          Give the menu time to leave before content enters.
-        */
 
         setTimeout(
           () => {
 
             contentPage.classList.add(
-              "active"
+              'active'
             );
 
           },
@@ -1333,11 +1503,12 @@
       button => {
 
         button.addEventListener(
-          "click",
+          'click',
           () => {
 
             const section =
               button.dataset.section;
+
 
             openContent(
               section,
@@ -1353,21 +1524,10 @@
 
     /* =========================================================
        MOBILE BACK ARROW
-       =========================================================
-
-       NEW RETURN SEQUENCE:
-
-       1. Content slides LEFT.
-       2. Content finishes leaving.
-       3. Menu's mobile-hidden state is removed.
-       4. Menu is at its NORMAL position but invisible.
-       5. Menu fades in.
-
-       There is NO right-to-left menu movement anymore.
        ========================================================= */
 
     backButton.addEventListener(
-      "click",
+      'click',
       () => {
 
 
@@ -1376,95 +1536,68 @@
         }
 
 
-        /* -----------------------------------------------------
-           STEP 1
-
-           Content begins leaving LEFT.
-           ----------------------------------------------------- */
+        /*
+         * CONTENT → LEFT
+         */
 
         contentPage.classList.add(
-          "leaving-left"
+          'leaving-left'
         );
 
-
-        /*
-          Force layout so the browser registers the
-          starting position.
-        */
 
         void contentPage.offsetWidth;
 
 
-        /*
-          Remove active state.
-
-          Because .leaving-left is still present, the
-          content moves LEFT rather than RIGHT.
-        */
-
         contentPage.classList.remove(
-          "active"
+          'active'
         );
 
 
-        /* -----------------------------------------------------
-           STEP 2
-
-           Wait for content to finish leaving.
-           ----------------------------------------------------- */
+        /*
+         * Wait for content to leave.
+         */
 
         setTimeout(
           () => {
 
 
             /*
-              Remove the class that had moved the menu
-              off-screen LEFT.
-            */
+             * Bring menu back to its
+             * normal position.
+             */
 
             menu.classList.remove(
-              "mobile-hidden"
+              'mobile-hidden'
             );
 
 
             /*
-              Put menu at its normal position, but invisible.
-            */
+             * Keep it invisible temporarily.
+             */
 
             menu.classList.add(
-              "menu-fading-in"
+              'menu-fading-in'
             );
 
-
-            /*
-              Force layout so the browser recognises
-              opacity: 0 at the normal position.
-            */
 
             void menu.offsetWidth;
 
 
             /*
-              Remove fading state.
-
-              Menu now fades:
-
-                  opacity 0 → 1
-
-              while staying stationary.
-            */
+             * Fade menu in.
+             */
 
             menu.classList.remove(
-              "menu-fading-in"
+              'menu-fading-in'
             );
 
 
             /*
-              Clean up the temporary content state.
-            */
+             * Clean up content.
+             */
 
             contentPage.classList.remove(
-              "leaving-left"
+              'leaving-left'
             );
 
 
@@ -1481,45 +1614,35 @@
        ========================================================= */
 
     window.addEventListener(
-      "resize",
+      'resize',
       () => {
 
 
-        /*
-          Reset content.
-        */
+        contentPage.classList.remove(
+          'active'
+        );
+
 
         contentPage.classList.remove(
-          "active"
+          'leaving-left'
         );
 
-        contentPage.classList.remove(
-          "leaving-left"
-        );
-
-
-        /*
-          Reset menu.
-        */
 
         menu.classList.remove(
-          "mobile-hidden"
+          'mobile-hidden'
         );
+
 
         menu.classList.remove(
-          "menu-fading-in"
+          'menu-fading-in'
         );
 
-
-        /*
-          Reset selected state.
-        */
 
         menuButtons.forEach(
           button => {
 
             button.classList.remove(
-              "selected"
+              'selected'
             );
 
           }
@@ -1530,6 +1653,7 @@
 
 
   </script>
+
 
 </body>
 </html>
