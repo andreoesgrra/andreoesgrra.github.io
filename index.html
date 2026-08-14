@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
   <meta charset="UTF-8">
+
+  <!-- =========================================================
+       VIEWPORT
+       =========================================================
+
+       Keep this standard.
+
+       We are NOT attempting to repair Safari's viewport with
+       JavaScript anymore.
+
+       Mobile/desktop detection is handled separately using
+       screen.width.
+       ========================================================= -->
 
   <meta
     name="viewport"
@@ -13,238 +27,156 @@
 
 
   <!-- =========================================================
-       VIEWPORT RECOVERY
+       DEVICE DETECTION
        =========================================================
 
-       Attempts to correct the iOS Safari 980px viewport issue.
+       IMPORTANT:
 
-       Your iPhone has previously reported:
+       Some iPhones can report:
 
-         innerWidth: 980
-         screen.width: 390
+           screen.width = 390
+           innerWidth   = 980
 
-       This script detects that mismatch and asks Safari to
-       recalculate the viewport.
+       Safari then evaluates:
+
+           @media (max-width: 768px)
+
+       incorrectly.
+
+       We therefore use screen.width instead.
+
+       This adds either:
+
+           html.is-mobile
+
+       or:
+
+           html.is-desktop
+
+       to the document.
+
+       The CSS below uses these classes instead of relying on
+       Safari's potentially incorrect layout viewport.
        ========================================================= -->
 
   <script>
 
-  (function () {
+    (function () {
 
-    const meta =
-      document.querySelector(
-        'meta[name="viewport"]'
-      );
+      function updateDeviceClass() {
 
-    if (!meta) return;
+        const physicalWidth =
+          window.screen.width;
 
-
-    const normalViewport =
-      'width=device-width, initial-scale=1, viewport-fit=cover';
+        const mobile =
+          physicalWidth <= 768;
 
 
-    const recoveryViewport =
-      'width=device-width, initial-scale=1';
+        document.documentElement.classList.toggle(
+          "is-mobile",
+          mobile
+        );
 
 
-    function viewportIsBroken() {
-
-      return (
-        window.innerWidth >
-        screen.width * 1.5
-      );
-
-    }
-
-
-    function forceViewportRecovery() {
-
-      /*
-       * Nothing to do if the viewport is already normal.
-       */
-
-      if (!viewportIsBroken()) {
-        return;
-      }
-
-
-      /*
-       * -------------------------------------------------------
-       * STEP 1
-       *
-       * Temporarily simplify the viewport declaration.
-       * -------------------------------------------------------
-       */
-
-      meta.setAttribute(
-        'content',
-        recoveryViewport
-      );
-
-
-      /*
-       * Force Safari to perform a layout.
-       */
-
-      void document.documentElement.offsetHeight;
-
-
-      /*
-       * -------------------------------------------------------
-       * STEP 2
-       *
-       * Restore the normal viewport declaration.
-       * -------------------------------------------------------
-       */
-
-      setTimeout(function () {
-
-        meta.setAttribute(
-          'content',
-          normalViewport
+        document.documentElement.classList.toggle(
+          "is-desktop",
+          !mobile
         );
 
 
         /*
-         * Force another layout.
-         */
-
-        void document.documentElement.offsetHeight;
-
-
-        /*
-         * -----------------------------------------------------
-         * STEP 3
+         * DEBUGGING
          *
-         * Check whether Safari actually recovered.
-         * -----------------------------------------------------
+         * Open Safari's developer console if you want to
+         * check what the device is reporting.
+         *
+         * Example:
+         *
+         * screen.width: 390
+         * innerWidth: 980
+         * mobile: true
          */
 
-        setTimeout(function () {
+        console.log(
+          "screen.width:",
+          physicalWidth,
+          "innerWidth:",
+          window.innerWidth,
+          "mobile:",
+          mobile
+        );
 
-          if (viewportIsBroken()) {
-
-            /*
-             * Safari did not recover.
-             *
-             * Try the process once more.
-             */
-
-            meta.setAttribute(
-              'content',
-              recoveryViewport
-            );
+      }
 
 
-            void document.documentElement.offsetHeight;
+      /*
+       * Run immediately.
+       */
+
+      updateDeviceClass();
 
 
-            setTimeout(function () {
+      /*
+       * Run again once the page has loaded.
+       */
 
-              meta.setAttribute(
-                'content',
-                normalViewport
-              );
-
-
-              void document.documentElement.offsetHeight;
-
-            }, 100);
-
-          }
-
-        }, 100);
-
-      }, 100);
-
-    }
+      window.addEventListener(
+        "load",
+        updateDeviceClass
+      );
 
 
-    /*
-     * ---------------------------------------------------------
-     * INITIAL ATTEMPTS
-     * ---------------------------------------------------------
-     */
+      /*
+       * Re-check if the viewport changes.
+       */
 
-    setTimeout(
-      forceViewportRecovery,
-      50
-    );
-
-    setTimeout(
-      forceViewportRecovery,
-      300
-    );
-
-    setTimeout(
-      forceViewportRecovery,
-      1000
-    );
+      window.addEventListener(
+        "resize",
+        updateDeviceClass
+      );
 
 
-    /*
-     * ---------------------------------------------------------
-     * SAFARI BACKGROUND / FOREGROUND
-     * ---------------------------------------------------------
-     */
+      /*
+       * Re-check after orientation changes.
+       */
 
-    document.addEventListener(
-      'visibilitychange',
-      function () {
-
-        if (
-          document.visibilityState === 'visible'
-        ) {
+      window.addEventListener(
+        "orientationchange",
+        function () {
 
           setTimeout(
-            forceViewportRecovery,
+            updateDeviceClass,
             100
           );
 
         }
+      );
 
-      }
-    );
-
-
-    /*
-     * ---------------------------------------------------------
-     * RESIZE
-     * ---------------------------------------------------------
-     */
-
-    window.addEventListener(
-      'resize',
-      function () {
-
-        setTimeout(
-          forceViewportRecovery,
-          50
-        );
-
-      }
-    );
-
-  })();
+    })();
 
   </script>
 
 
   <style>
 
+
     /* =========================================================
        EASY EDITING — GLOBAL SETTINGS
        ========================================================= */
 
+
     :root {
+
 
       /* -------------------------------------------------------
          GENERAL
          ------------------------------------------------------- */
 
-      --background: #f5f3ee;
+      --background:
+        #f5f3ee;
 
-      --text: #111111;
+      --text:
+        #111111;
 
 
       /* -------------------------------------------------------
@@ -254,9 +186,11 @@
          CHANGE THIS HEX VALUE TO CHANGE THE BLUE RHOMBUS.
          ------------------------------------------------------- */
 
-      --menu-active-blue: #d3e4f1;
+      --menu-active-blue:
+        #d3e4f1;
 
-      --menu-active-text: #111111;
+      --menu-active-text:
+        #111111;
 
 
       /* -------------------------------------------------------
@@ -268,6 +202,7 @@
 
       --title-size-mobile:
         clamp(7rem, 34vw, 13rem);
+
 
       --title-bottom-desktop:
         1.5rem;
@@ -288,7 +223,7 @@
 
 
       /*
-        DOUBLE PADDING
+        MENU PADDING
       */
 
       --menu-padding-vertical:
@@ -367,8 +302,10 @@
        ========================================================= */
 
     * {
+
       box-sizing:
         border-box;
+
     }
 
 
@@ -383,6 +320,7 @@
 
       height:
         100%;
+
     }
 
 
@@ -401,6 +339,7 @@
 
       overflow:
         hidden;
+
     }
 
 
@@ -421,11 +360,23 @@
 
       overflow:
         hidden;
+
     }
 
 
     /* =========================================================
        CONTENT PAGE
+       =========================================================
+
+       DESKTOP:
+
+       Content fades in.
+
+       MOBILE:
+
+       Content slides in from the right.
+
+       The content layer sits underneath the menu and title.
        ========================================================= */
 
     .content-page {
@@ -472,8 +423,13 @@
       transition:
         opacity var(--content-transition),
         visibility var(--content-transition);
+
     }
 
+
+    /* =========================================================
+       ACTIVE CONTENT
+       ========================================================= */
 
     .content-page.active {
 
@@ -485,6 +441,7 @@
 
       pointer-events:
         auto;
+
     }
 
 
@@ -511,6 +468,7 @@
 
       line-height:
         1.4;
+
     }
 
 
@@ -523,6 +481,7 @@
 
       height:
         auto;
+
     }
 
 
@@ -560,6 +519,7 @@
       transition:
         transform var(--menu-transition),
         opacity var(--menu-transition);
+
     }
 
 
@@ -606,6 +566,7 @@
       transition:
         color 250ms ease,
         transform 250ms ease;
+
     }
 
 
@@ -613,6 +574,7 @@
 
       transform:
         translateY(-2px);
+
     }
 
 
@@ -643,6 +605,12 @@
       left:
         0;
 
+      /*
+       * =======================================================
+       * CHANGE BLUE HERE
+       * =======================================================
+       */
+
       background:
         var(--menu-active-blue);
 
@@ -659,6 +627,7 @@
 
       transition:
         opacity 250ms ease;
+
     }
 
 
@@ -666,6 +635,7 @@
 
       color:
         var(--menu-active-text);
+
     }
 
 
@@ -673,6 +643,7 @@
 
       opacity:
         1;
+
     }
 
 
@@ -727,11 +698,15 @@
 
       pointer-events:
         none;
+
     }
 
 
     /* =========================================================
        BACK ARROW
+       =========================================================
+
+       Hidden on desktop.
        ========================================================= */
 
     .back-button {
@@ -768,305 +743,333 @@
 
       cursor:
         pointer;
+
     }
 
 
     /* =========================================================
        MOBILE
+       =========================================================
+
+       IMPORTANT:
+
+       We deliberately DO NOT use:
+
+           @media (max-width: 768px)
+
+       Safari may be reporting a 980px layout viewport.
+
+       Instead we use:
+
+           html.is-mobile
+
+       which is determined from screen.width.
        ========================================================= */
 
-    @media (max-width: 768px) {
 
+    html.is-mobile .menu {
 
-      /* =======================================================
-         MOBILE MENU
-         ======================================================= */
+      top:
+        1.5rem;
 
-      .menu {
+      left:
+        0.3rem;
 
-        top:
-          1.5rem;
+      bottom:
+        auto;
 
-        left:
-          0.3rem;
+      transform:
+        translateX(0);
 
-        bottom:
-          auto;
+      display:
+        flex;
 
-        transform:
-          translateX(0);
+      flex-direction:
+        column;
 
-        display:
-          flex;
+      gap:
+        1.5rem;
 
-        flex-direction:
-          column;
+      align-items:
+        flex-start;
 
-        gap:
-          1.5rem;
+      transition:
+        transform var(--menu-transition),
+        opacity var(--menu-transition);
 
-        align-items:
-          flex-start;
+    }
 
-        transition:
-          transform var(--menu-transition),
-          opacity var(--menu-transition);
-      }
 
+    html.is-mobile .menu button {
 
-      .menu button {
+      font-size:
+        1rem;
 
-        font-size:
-          1rem;
+      padding:
+        var(--menu-padding-vertical)
+        var(--menu-padding-horizontal);
 
-        padding:
-          var(--menu-padding-vertical)
-          var(--menu-padding-horizontal);
-      }
+    }
 
 
-      /* No blue rhombus on mobile */
+    /* ---------------------------------------------------------
+       MOBILE — NO BLUE RHOMBUS
+       --------------------------------------------------------- */
 
-      .menu button.selected {
+    html.is-mobile .menu button.selected {
 
-        color:
-          var(--text);
-      }
+      color:
+        var(--text);
 
+    }
 
-      .menu button.selected::before {
 
-        opacity:
-          0;
-      }
+    html.is-mobile .menu button.selected::before {
 
+      opacity:
+        0;
 
-      /* =======================================================
-         MOBILE MENU — LEAVE LEFT
-         ======================================================= */
+    }
 
-      .menu.mobile-hidden {
 
-        transform:
-          translateX(
-            calc(-100vw - 2rem)
-          );
+    /* =========================================================
+       MOBILE MENU — LEAVE LEFT
+       ========================================================= */
 
-        opacity:
-          0;
+    html.is-mobile .menu.mobile-hidden {
 
-        pointer-events:
-          none;
-      }
+      transform:
+        translateX(
+          calc(-100vw - 2rem)
+        );
 
+      opacity:
+        0;
 
-      /* =======================================================
-         MOBILE MENU — FADE BACK IN
-         ======================================================= */
+      pointer-events:
+        none;
 
-      .menu.menu-fading-in {
+    }
 
-        transform:
-          translateX(0);
 
-        opacity:
-          0;
+    /* =========================================================
+       MOBILE MENU — FADE BACK IN
+       ========================================================= */
 
-        pointer-events:
-          none;
+    html.is-mobile .menu.menu-fading-in {
 
-        transition:
-          opacity var(--menu-return-fade);
-      }
+      transform:
+        translateX(0);
 
+      opacity:
+        0;
 
-      /* =======================================================
-         MOBILE TITLE
-         ======================================================= */
+      pointer-events:
+        none;
 
-      .title {
+      transition:
+        opacity var(--menu-return-fade);
 
-        left:
-          50%;
+    }
 
-        bottom:
-          var(--title-bottom-mobile);
 
-        transform:
-          translateX(-50%)
-          scaleX(1.10);
+    /* =========================================================
+       MOBILE TITLE
+       ========================================================= */
 
-        transform-origin:
-          center bottom;
+    html.is-mobile .title {
 
-        font-size:
-          var(--title-size-mobile);
+      left:
+        50%;
 
-        line-height:
-          0.72;
+      bottom:
+        var(--title-bottom-mobile);
 
-        letter-spacing:
-          -0.06em;
-      }
+      transform:
+        translateX(-50%)
+        scaleX(1.10);
 
+      transform-origin:
+        center bottom;
 
-      /* =======================================================
-         MOBILE CONTENT PAGE
-         ======================================================= */
+      font-size:
+        var(--title-size-mobile);
 
-      .content-page {
+      line-height:
+        0.72;
 
-        position:
-          absolute;
+      letter-spacing:
+        -0.06em;
 
-        inset:
-          0;
+    }
 
-        width:
-          100%;
 
-        max-width:
-          100%;
+    /* =========================================================
+       MOBILE CONTENT PAGE
+       ========================================================= */
 
-        height:
-          100%;
+    html.is-mobile .content-page {
 
-        overflow-y:
-          auto;
+      position:
+        absolute;
 
-        overflow-x:
-          hidden;
+      inset:
+        0;
 
-        padding:
-          var(--mobile-content-padding-top)
-          var(--mobile-content-padding-right)
-          var(--mobile-content-padding-bottom)
-          var(--mobile-content-padding-left);
+      width:
+        100%;
 
-        transform:
-          translateX(100%);
+      max-width:
+        100%;
 
-        opacity:
-          0;
+      height:
+        100%;
 
-        visibility:
-          hidden;
+      overflow-y:
+        auto;
 
-        pointer-events:
-          none;
+      overflow-x:
+        hidden;
 
-        z-index:
-          20;
+      padding:
+        var(--mobile-content-padding-top)
+        var(--mobile-content-padding-right)
+        var(--mobile-content-padding-bottom)
+        var(--mobile-content-padding-left);
 
-        transition:
-          transform 700ms
-          cubic-bezier(.77, 0, .175, 1),
+      /*
+       * INITIAL POSITION:
+       * outside viewport on RIGHT.
+       */
 
-          opacity 1000ms ease,
+      transform:
+        translateX(100%);
 
-          visibility 700ms ease;
-      }
+      opacity:
+        0;
 
+      visibility:
+        hidden;
 
-      /* =======================================================
-         MOBILE CONTENT — ENTER
-         ======================================================= */
+      pointer-events:
+        none;
 
-      .content-page.active {
+      z-index:
+        20;
 
-        transform:
-          translateX(0);
+      transition:
+        transform 700ms
+        cubic-bezier(.77, 0, .175, 1),
 
-        opacity:
-          1;
+        opacity 1000ms ease,
 
-        visibility:
-          visible;
+        visibility 700ms ease;
 
-        pointer-events:
-          auto;
-      }
+    }
 
 
-      /* =======================================================
-         MOBILE CONTENT — LEAVE LEFT
-         ======================================================= */
+    /* =========================================================
+       MOBILE CONTENT — ENTER
+       ========================================================= */
 
-      .content-page.leaving-left {
+    html.is-mobile .content-page.active {
 
-        transform:
-          translateX(-100%);
+      transform:
+        translateX(0);
 
-        opacity:
-          0;
+      opacity:
+        1;
 
-        visibility:
-          visible;
+      visibility:
+        visible;
 
-        pointer-events:
-          none;
+      pointer-events:
+        auto;
 
-        transition:
-          transform 650ms
-          cubic-bezier(.77, 0, .175, 1),
+    }
 
-          opacity 650ms ease;
-      }
 
+    /* =========================================================
+       MOBILE CONTENT — LEAVE LEFT
+       ========================================================= */
 
-      /* =======================================================
-         MOBILE CONTENT INNER
-         ======================================================= */
+    html.is-mobile .content-page.leaving-left {
 
-      .content-inner {
+      transform:
+        translateX(-100%);
 
-        width:
-          100%;
+      opacity:
+        0;
 
-        max-width:
-          100%;
+      visibility:
+        visible;
 
-        overflow-wrap:
-          break-word;
+      pointer-events:
+        none;
 
-        word-wrap:
-          break-word;
+      transition:
+        transform 650ms
+        cubic-bezier(.77, 0, .175, 1),
 
-        font-size:
-          var(--mobile-content-size);
+        opacity 650ms ease;
 
-        line-height:
-          1.5;
-      }
+    }
 
 
-      .content-inner img,
-      .content-inner video,
-      .content-inner iframe {
+    /* =========================================================
+       MOBILE CONTENT INNER
+       ========================================================= */
 
-        max-width:
-          100%;
+    html.is-mobile .content-inner {
 
-        height:
-          auto;
-      }
+      width:
+        100%;
 
+      max-width:
+        100%;
 
-      /* =======================================================
-         MOBILE BACK ARROW
-         ======================================================= */
+      overflow-wrap:
+        break-word;
 
-      .back-button {
+      word-wrap:
+        break-word;
 
-        display:
-          block;
+      font-size:
+        var(--mobile-content-size);
 
-        margin:
-          0 0 2rem 0;
+      line-height:
+        1.5;
 
-        font-size:
-          1.3rem;
-      }
+    }
+
+
+    html.is-mobile .content-inner img,
+    html.is-mobile .content-inner video,
+    html.is-mobile .content-inner iframe {
+
+      max-width:
+        100%;
+
+      height:
+        auto;
+
+    }
+
+
+    /* =========================================================
+       MOBILE BACK ARROW
+       ========================================================= */
+
+    html.is-mobile .back-button {
+
+      display:
+        block;
+
+      margin:
+        0 0 2rem 0;
+
+      font-size:
+        1.3rem;
 
     }
 
@@ -1083,9 +1086,11 @@
 
         transition-duration:
           0.01ms !important;
+
       }
 
     }
+
 
   </style>
 
@@ -1093,100 +1098,6 @@
 
 
 <body>
-
-
-  <!-- =========================================================
-       CLEAN VIEWPORT DEBUGGER
-       =========================================================
-
-       TEMPORARY.
-
-       This appears for 5 seconds after loading and shows the
-       viewport values Safari is actually reporting.
-
-       DELETE THIS ENTIRE SCRIPT once the problem is diagnosed.
-       ========================================================= -->
-
-  <script>
-
-  setTimeout(function () {
-
-    const debug =
-      document.createElement('div');
-
-
-    debug.id =
-      'viewport-debug';
-
-
-    debug.innerHTML =
-
-      'innerWidth: ' +
-      window.innerWidth +
-
-      '<br>' +
-
-      'innerHeight: ' +
-      window.innerHeight +
-
-      '<br>' +
-
-      'screen.width: ' +
-      screen.width +
-
-      '<br>' +
-
-      'screen.height: ' +
-      screen.height +
-
-      '<br>' +
-
-      'devicePixelRatio: ' +
-      window.devicePixelRatio +
-
-      '<br>' +
-
-      'CSS mobile: ' +
-      window.matchMedia(
-        '(max-width: 768px)'
-      ).matches;
-
-
-    debug.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 99999;
-      background: rgba(255,255,255,0.95);
-      color: #000;
-      padding: 10px;
-      font: 13px/1.5 monospace;
-      border: 1px solid #000;
-      pointer-events: none;
-    `;
-
-
-    document.body.appendChild(
-      debug
-    );
-
-
-    /*
-     * Automatically remove the diagnostic
-     * after 10 seconds.
-     */
-
-    setTimeout(function () {
-
-      debug.remove();
-
-    }, 10000);
-
-
-  }, 1500);
-
-  </script>
-
 
 
   <main class="page">
@@ -1204,10 +1115,11 @@
       <div class="content-inner">
 
 
-        <!--
-          Hidden on desktop.
-          Visible on mobile.
-        -->
+        <!-- ===================================================
+             MOBILE BACK ARROW
+
+             Hidden on desktop.
+             =================================================== -->
 
         <button
           class="back-button"
@@ -1218,10 +1130,11 @@
         </button>
 
 
-        <!-- Selected content appears here -->
+        <!-- ===================================================
+             SELECTED CONTENT
+             =================================================== -->
 
-        <div id="content">
-        </div>
+        <div id="content"></div>
 
 
       </div>
@@ -1238,15 +1151,23 @@
       id="menu"
     >
 
-      <button data-section="about">
+      <button
+        data-section="about"
+      >
         about
       </button>
 
-      <button data-section="work">
+
+      <button
+        data-section="work"
+      >
         sound
       </button>
 
-      <button data-section="contact">
+
+      <button
+        data-section="contact"
+      >
         contact
       </button>
 
@@ -1265,88 +1186,110 @@
   </main>
 
 
-
   <script>
 
 
     /* =========================================================
        CONTENT
+       =========================================================
+
+       Replace the text inside these sections with your actual
+       website content.
+
+       HTML is allowed.
+
        ========================================================= */
+
 
     const contentData = {
 
+
+      /* =======================================================
+         ABOUT
+         ======================================================= */
 
       about: `
 
         <font color="777777">
 
-        <p>
-        Violinist on Ngunnawal country.
-        </p>
+          <p>
+            Violinist on Ngunnawal country.
+          </p>
 
 
-        <p>
+          <p>
+            After 15+ years experience in commercial music
+            performance&mdash;from the <i>Bee Gees</i> to
+            <i>The Phantom of the Opera</i> and 2 years touring
+            with a
+            <a
+              href="https://youtu.be/fy7F1f_sO3E?si=gW0SHWK7OhuGrkbL"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: grey;"
+            >
+              pop rock band
+            </a>,
+            to countless corporate events and television
+            appearances (inc. one for <i>Netflix</i>)&mdash;
+          </font>
 
-        After 15+ years experience in commercial
-        music performance&mdash;from the
-        <i>Bee Gees</i> to
-        <i>The Phantom of the Opera</i>
-        and 2 years touring with a
-        <a
-          href="https://youtu.be/fy7F1f_sO3E?si=gW0SHWK7OhuGrkbL"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="color: grey;"
-        >
-          pop rock band
-        </a>,
+          I am now
+          <b>primarily seeking creative alignment</b>.
 
-        to countless corporate events and
-        television appearances
-        (inc. one for <i>Netflix</i>)&mdash;
-
-        </font>
-
-        I am now
-        <b>primarily seeking creative alignment</b>.
-
-        </p>
+          </p>
 
 
-        <p>
+          <p>
 
-        <font color="777777">
+            <font color="777777">
 
-        Currently, my interest is in soul, rock,
-        electronic, experimental, world, folk,
-        R&amp;B and metal.
+              Currently, my interest is in soul, rock,
+              electronic, experimental, world, folk, R&amp;B
+              and metal.
 
-        </font>
+            </font>
 
-        <br><br><br><br><br><br><br>
 
-        </p>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
+          </p>
 
       `,
 
+
+      /* =======================================================
+         SOUND
+         ======================================================= */
 
       work: `
 
         <p>
-        TBD
+          TBD
         </p>
 
       `,
 
 
+      /* =======================================================
+         CONTACT
+         ======================================================= */
+
       contact: `
 
         <p>
-        hello@andreo.com.au
+          hello@andreo.com.au
         </p>
 
+
         <p>
-        @helloandreo
+          @helloandreo
         </p>
 
       `
@@ -1358,33 +1301,34 @@
        ELEMENTS
        ========================================================= */
 
+
     const menu =
       document.getElementById(
-        'menu'
+        "menu"
       );
 
 
     const menuButtons =
       document.querySelectorAll(
-        '.menu button'
+        ".menu button"
       );
 
 
     const contentPage =
       document.getElementById(
-        'contentPage'
+        "contentPage"
       );
 
 
     const content =
       document.getElementById(
-        'content'
+        "content"
       );
 
 
     const backButton =
       document.getElementById(
-        'backButton'
+        "backButton"
       );
 
 
@@ -1392,28 +1336,34 @@
        MOBILE DETECTION
        =========================================================
 
-       Uses both CSS viewport width and physical screen width.
+       IMPORTANT:
 
-       This protects the menu system if Safari temporarily
-       reports the 980px viewport.
+       Do NOT use:
+
+         window.innerWidth
+
+       or:
+
+         matchMedia("(max-width: 768px)")
+
+       here.
+
+       On your iPhone Safari is reporting:
+
+         innerWidth = 980
+
+       while:
+
+         screen.width = 390
+
+       Therefore screen.width is the reliable value for
+       this site's mobile/desktop decision.
        ========================================================= */
+
 
     function isMobile() {
 
-      const cssMobile =
-        window.matchMedia(
-          '(max-width: 768px)'
-        ).matches;
-
-
-      const physicalMobile =
-        screen.width <= 768;
-
-
-      return (
-        cssMobile ||
-        physicalMobile
-      );
+      return window.screen.width <= 768;
 
     }
 
@@ -1422,11 +1372,16 @@
        OPEN CONTENT
        ========================================================= */
 
+
     function openContent(
       section,
       selectedButton
     ) {
 
+
+      /*
+       * Insert requested content.
+       */
 
       content.innerHTML =
         contentData[section];
@@ -1439,24 +1394,38 @@
       if (!isMobile()) {
 
 
+        /*
+         * Remove previous selection.
+         */
+
         menuButtons.forEach(
           button => {
 
             button.classList.remove(
-              'selected'
+              "selected"
             );
 
           }
         );
 
 
+        /*
+         * Select clicked menu item.
+         *
+         * This activates the blue rhombus.
+         */
+
         selectedButton.classList.add(
-          'selected'
+          "selected"
         );
 
 
+        /*
+         * Fade content in.
+         */
+
         contentPage.classList.add(
-          'active'
+          "active"
         );
 
       }
@@ -1469,21 +1438,34 @@
       else {
 
 
+        /*
+         * Remove any previous menu-return state.
+         */
+
         menu.classList.remove(
-          'menu-fading-in'
+          "menu-fading-in"
         );
 
+
+        /*
+         * Menu leaves LEFT.
+         */
 
         menu.classList.add(
-          'mobile-hidden'
+          "mobile-hidden"
         );
 
+
+        /*
+         * Allow the menu to move out before the content
+         * begins entering.
+         */
 
         setTimeout(
           () => {
 
             contentPage.classList.add(
-              'active'
+              "active"
             );
 
           },
@@ -1499,11 +1481,12 @@
        MENU BUTTON EVENTS
        ========================================================= */
 
+
     menuButtons.forEach(
       button => {
 
         button.addEventListener(
-          'click',
+          "click",
           () => {
 
             const section =
@@ -1524,80 +1507,126 @@
 
     /* =========================================================
        MOBILE BACK ARROW
+       =========================================================
+
+       RETURN SEQUENCE:
+
+       1. Content slides LEFT.
+       2. Content finishes leaving.
+       3. Menu returns to its normal position.
+       4. Menu starts invisible.
+       5. Menu fades in.
+
+       The menu does NOT slide back in.
        ========================================================= */
 
+
     backButton.addEventListener(
-      'click',
+      "click",
       () => {
 
 
+        /*
+         * Ignore the button on desktop.
+         */
+
         if (!isMobile()) {
+
           return;
+
         }
 
 
-        /*
-         * CONTENT → LEFT
-         */
+        /* -----------------------------------------------------
+           STEP 1
+           Content begins leaving LEFT.
+           ----------------------------------------------------- */
 
         contentPage.classList.add(
-          'leaving-left'
+          "leaving-left"
         );
 
+
+        /*
+         * Force layout so the browser registers the starting
+         * state before the transition begins.
+         */
 
         void contentPage.offsetWidth;
 
 
+        /*
+         * Remove active state.
+
+         * Because leaving-left is still present, the content
+         * travels LEFT rather than returning RIGHT.
+         */
+
         contentPage.classList.remove(
-          'active'
+          "active"
         );
 
 
-        /*
-         * Wait for content to leave.
-         */
+        /* -----------------------------------------------------
+           STEP 2
+           Wait for content to finish leaving.
+           ----------------------------------------------------- */
 
         setTimeout(
           () => {
 
 
             /*
-             * Bring menu back to its
-             * normal position.
+             * Remove the class that moved the menu LEFT.
              */
 
             menu.classList.remove(
-              'mobile-hidden'
+              "mobile-hidden"
             );
 
 
             /*
-             * Keep it invisible temporarily.
+             * Put the menu back in its normal position,
+             * but make it invisible.
              */
 
             menu.classList.add(
-              'menu-fading-in'
+              "menu-fading-in"
             );
 
+
+            /*
+             * Force layout so the browser registers:
+             *
+             * opacity: 0
+             *
+             * at the normal menu position.
+             */
 
             void menu.offsetWidth;
 
 
             /*
-             * Fade menu in.
+             * Remove the fading class.
+             *
+             * This causes:
+             *
+             * opacity 0 → 1
+             *
+             * while the menu remains stationary.
              */
 
             menu.classList.remove(
-              'menu-fading-in'
+              "menu-fading-in"
             );
 
 
             /*
-             * Clean up content.
+             * Clean up the temporary content state.
              */
 
             contentPage.classList.remove(
-              'leaving-left'
+              "leaving-left"
             );
 
 
@@ -1611,38 +1640,55 @@
 
     /* =========================================================
        WINDOW RESIZE
+       =========================================================
+
+       Reset the interface if the device changes orientation
+       or moves between mobile/desktop dimensions.
        ========================================================= */
 
+
     window.addEventListener(
-      'resize',
+      "resize",
       () => {
 
 
+        /*
+         * Reset content.
+         */
+
         contentPage.classList.remove(
-          'active'
+          "active"
         );
 
 
         contentPage.classList.remove(
-          'leaving-left'
+          "leaving-left"
+        );
+
+
+        /*
+         * Reset menu.
+         */
+
+        menu.classList.remove(
+          "mobile-hidden"
         );
 
 
         menu.classList.remove(
-          'mobile-hidden'
+          "menu-fading-in"
         );
 
 
-        menu.classList.remove(
-          'menu-fading-in'
-        );
-
+        /*
+         * Reset selected state.
+         */
 
         menuButtons.forEach(
           button => {
 
             button.classList.remove(
-              'selected'
+              "selected"
             );
 
           }
@@ -1656,4 +1702,5 @@
 
 
 </body>
+
 </html>
