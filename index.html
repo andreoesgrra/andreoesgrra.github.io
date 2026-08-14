@@ -916,6 +916,17 @@
 
 <body>
 
+	<div id="viewport-debug"></div>
+
+<script>
+  const debug = document.getElementById("viewport-debug");
+
+  debug.innerHTML =
+    "Width: " + window.innerWidth +
+    "<br>Height: " + window.innerHeight +
+    "<br>Mobile: " +
+    window.matchMedia("(max-width: 768px)").matches;
+</script>
 
   <main class="page">
 
