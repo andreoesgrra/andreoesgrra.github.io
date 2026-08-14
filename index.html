@@ -1089,7 +1089,7 @@
 
     function isMobile() {
 
-      return window.innerWidth <= 768;
+       return window.matchMedia("(max-width: 768px)").matches;
 
     }
 
