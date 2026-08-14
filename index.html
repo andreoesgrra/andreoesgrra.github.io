@@ -5,59 +5,12 @@
 
   <meta charset="UTF-8">
 
-  <!-- =========================================================
-       VIEWPORT
-       =========================================================
-
-       Keep this standard.
-
-       We are NOT attempting to repair Safari's viewport with
-       JavaScript anymore.
-
-       Mobile/desktop detection is handled separately using
-       screen.width.
-       ========================================================= -->
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
   <title>Andreo</title>
-
-
-  <!-- =========================================================
-       DEVICE DETECTION
-       =========================================================
-
-       IMPORTANT:
-
-       Some iPhones can report:
-
-           screen.width = 390
-           innerWidth   = 980
-
-       Safari then evaluates:
-
-           @media (max-width: 768px)
-
-       incorrectly.
-
-       We therefore use screen.width instead.
-
-       This adds either:
-
-           html.is-mobile
-
-       or:
-
-           html.is-desktop
-
-       to the document.
-
-       The CSS below uses these classes instead of relying on
-       Safari's potentially incorrect layout viewport.
-       ========================================================= -->
 
   <script>
 
@@ -182,9 +135,7 @@
       /* -------------------------------------------------------
          SELECTED MENU ITEM — BLUE
          -------------------------------------------------------
-
-         CHANGE THIS HEX VALUE TO CHANGE THE BLUE RHOMBUS.
-         ------------------------------------------------------- */
+       */
 
       --menu-active-blue:
         #d3e4f1;
