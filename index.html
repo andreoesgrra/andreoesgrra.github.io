@@ -34,9 +34,9 @@
          CHANGE THIS HEX VALUE TO CHANGE THE BLUE RHOMBUS.
          ------------------------------------------------------- */
 
-      --menu-active-blue: #1769ff;
+      --menu-active-blue: #d3e4f1;
 
-      --menu-active-text: #ffffff;
+      --menu-active-text: #111111;
 
 
       /* -------------------------------------------------------
@@ -64,7 +64,7 @@
         0.9rem;
 
       --menu-spacing:
-        2.5rem;
+        0.6rem;
 
 
       /*
@@ -75,7 +75,7 @@
         0.4rem;
 
       --menu-padding-horizontal:
-        0.9rem;
+        1.8rem;
 
 
       /*
@@ -91,16 +91,16 @@
          ------------------------------------------------------- */
 
       --desktop-content-padding-top:
-        1.5rem;
+        0rem;
 
       --desktop-content-padding-right:
-        1.5rem;
+        0rem;
 
       --desktop-content-padding-bottom:
         8rem;
 
       --desktop-content-padding-left:
-        1.5rem;
+        5rem;
 
       --desktop-content-size:
         clamp(1.2rem, 2.2vw, 2rem);
@@ -111,7 +111,7 @@
          ------------------------------------------------------- */
 
       --mobile-content-padding-top:
-        1.5rem;
+        8rem;
 
       --mobile-content-padding-right:
         1.5rem;
@@ -134,14 +134,14 @@
         650ms cubic-bezier(.77, 0, .175, 1);
 
       --content-transition:
-        900ms ease;
+        700ms ease;
 
       /*
         How slowly the menu fades back in on mobile.
       */
 
       --menu-return-fade:
-        1000ms ease;
+        700ms ease;
 
     }
 
@@ -591,7 +591,7 @@
           1.5rem;
 
         left:
-          1.5rem;
+          0.3rem;
 
         bottom:
           auto;
@@ -967,15 +967,15 @@
     >
 
       <button data-section="about">
-        About
+        about
       </button>
 
       <button data-section="work">
-        Work
+        sound
       </button>
 
       <button data-section="contact">
-        Contact
+        contact
       </button>
 
     </nav>
@@ -1008,28 +1008,17 @@
     const contentData = {
 
       about: `
-        <p>
-	Hello. I am a violinist on Ngunnawal country.
+        <font color="777777">
+	<p>
+	Violinist on Ngunnawal country.
 	</p>
 
         <p>
-	15+ years experience blah blah blah. Currently seeking primarily creative alignment.
+	After 15+ years experience in commercial music performance&mdash;from the <i>Bee Gees</i> to <i>The Phantom of the Opera</i> and 2 years touring with a <a href="https://youtu.be/fy7F1f_sO3E?si=gW0SHWK7OhuGrkbL" target="_blank" rel="noopener noreferrer" style="color: grey;">pop rock band</a>, to countless corporate events and television appearances (inc. one for <i>Netflix</i>)&mdash;</font>I am now <b>primarily seeking creative alignment</b>.
         </p>
 
 	<p>
-	<b>Soul, Rock, Electronic, Experimental, World, Folk, R&B, Metal and Pop:</b>
-	<br><i>high interest</i>, technically pro
-	</p>
-
-	<p>
-	<b>Blues, Jazz:</b>
-	<br>moderate interest, technically amateur
-	</p>
-
-	<p>
-	<b>Classical:</b>
-	<br>moderate interest, currently probably AMEB Grade 6/7
-	<br>
+	<font color="777777">Currently, my interest is in soul, rock, electronic, experimental, world, folk, R&B and metal.</font>
 	<br>
 	<br>
 	<br>
@@ -1045,7 +1034,7 @@
       work: `
 
         <p>
-          This is what I sound like.
+	TBD
         </p>
 
       `,
@@ -1055,6 +1044,10 @@
         <p>
         hello@andreo.com.au
         </p>
+
+	<p>
+	@helloandreo
+	</p>
       `
 
     };
