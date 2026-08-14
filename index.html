@@ -1,61 +1,1561 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
-  <title>Viewport Test</title>
+  <title>Andreo</title>
+
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+
+    /* =========================================================
+       EASY EDITING — GLOBAL SETTINGS
+       ========================================================= */
+
+    :root {
+
+      /* -------------------------------------------------------
+         GENERAL
+         ------------------------------------------------------- */
+
+      --background: #f5f3ee;
+      --text: #111111;
+
+
+      /* -------------------------------------------------------
+         SELECTED MENU ITEM — BLUE
+         -------------------------------------------------------
+
+         CHANGE THIS HEX VALUE TO CHANGE THE BLUE RHOMBUS.
+         ------------------------------------------------------- */
+
+      --menu-active-blue: #d3e4f1;
+
+      --menu-active-text: #111111;
+
+
+      /* -------------------------------------------------------
+         TITLE
+         ------------------------------------------------------- */
+
+      --title-size-desktop:
+        clamp(12rem, 34vw, 38rem);
+
+      --title-size-mobile:
+        clamp(7rem, 34vw, 13rem);
+
+      --title-bottom-desktop:
+        1.5rem;
+
+      --title-bottom-mobile:
+        1rem;
+
+
+      /* -------------------------------------------------------
+         MENU
+         ------------------------------------------------------- */
+
+      --menu-size:
+        0.9rem;
+
+      --menu-spacing:
+        0.6rem;
+
+
+      /*
+        DOUBLE PADDING
+      */
+
+      --menu-padding-vertical:
+        0.4rem;
+
+      --menu-padding-horizontal:
+        1.8rem;
+
+
+      /*
+        RHOMBUS ANGLE
+      */
+
+      --menu-rhombus-angle:
+        0.45rem;
+
+
+      /* -------------------------------------------------------
+         DESKTOP CONTENT
+         ------------------------------------------------------- */
+
+      --desktop-content-padding-top:
+        0rem;
+
+      --desktop-content-padding-right:
+        0rem;
+
+      --desktop-content-padding-bottom:
+        8rem;
+
+      --desktop-content-padding-left:
+        5rem;
+
+      --desktop-content-size:
+        clamp(1.2rem, 2.2vw, 2rem);
+
+
+      /* -------------------------------------------------------
+         MOBILE CONTENT
+         ------------------------------------------------------- */
+
+      --mobile-content-padding-top:
+        8rem;
+
+      --mobile-content-padding-right:
+        1.5rem;
+
+      --mobile-content-padding-bottom:
+        5rem;
+
+      --mobile-content-padding-left:
+        1.5rem;
+
+      --mobile-content-size:
+        1rem;
+
+
+      /* -------------------------------------------------------
+         ANIMATION
+         ------------------------------------------------------- */
+
+      --menu-transition:
+        650ms cubic-bezier(.77, 0, .175, 1);
+
+      --content-transition:
+        700ms ease;
+
+      /*
+        How slowly the menu fades back in on mobile.
+      */
+
+      --menu-return-fade:
+        700ms ease;
+
     }
 
-    .mobile {
-      display: none;
+
+    /* =========================================================
+       RESET
+       ========================================================= */
+
+    * {
+      box-sizing: border-box;
     }
+
+
+    html,
+    body {
+
+      margin:
+        0;
+
+      width:
+        100%;
+
+      height:
+        100%;
+    }
+
+
+    body {
+
+      background:
+        var(--background);
+
+      color:
+        var(--text);
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      overflow:
+        hidden;
+    }
+
+
+    /* =========================================================
+       PAGE
+       ========================================================= */
+
+    .page {
+
+      position:
+        relative;
+
+      width:
+        100vw;
+
+      height:
+        100svh;
+
+      overflow:
+        hidden;
+    }
+
+
+    /* =========================================================
+       CONTENT PAGE
+       =========================================================
+
+       Desktop:
+         fades in.
+
+       Mobile:
+         enters from the right.
+
+       The layer sits underneath the menu and title.
+       ========================================================= */
+
+    .content-page {
+
+      position:
+        absolute;
+
+      inset:
+        0;
+
+      width:
+        100%;
+
+      max-width:
+        100vw;
+
+      height:
+        100%;
+
+      overflow-y:
+        auto;
+
+      overflow-x:
+        hidden;
+
+      padding:
+        var(--desktop-content-padding-top)
+        var(--desktop-content-padding-right)
+        var(--desktop-content-padding-bottom)
+        var(--desktop-content-padding-left);
+
+      opacity:
+        0;
+
+      visibility:
+        hidden;
+
+      pointer-events:
+        none;
+
+      z-index:
+        10;
+
+      transition:
+        opacity var(--content-transition),
+        visibility var(--content-transition);
+    }
+
+
+    /* ---------------------------------------------------------
+       ACTIVE CONTENT
+       --------------------------------------------------------- */
+
+    .content-page.active {
+
+      opacity:
+        1;
+
+      visibility:
+        visible;
+
+      pointer-events:
+        auto;
+    }
+
+
+    /* ---------------------------------------------------------
+       CONTENT WIDTH
+       --------------------------------------------------------- */
+
+    .content-inner {
+
+      width:
+        100%;
+
+      max-width:
+        100%;
+
+      overflow-wrap:
+        break-word;
+
+      word-wrap:
+        break-word;
+
+      font-size:
+        var(--desktop-content-size);
+
+      line-height:
+        1.4;
+    }
+
+
+    .content-inner img,
+    .content-inner video,
+    .content-inner iframe {
+
+      max-width:
+        100%;
+
+      height:
+        auto;
+    }
+
+
+    /* =========================================================
+       MENU
+       ========================================================= */
+
+    .menu {
+
+      position:
+        absolute;
+
+      bottom:
+        calc(
+          var(--title-bottom-desktop) +
+          var(--title-size-desktop) * 0.72 +
+          1.4rem
+        );
+
+      left:
+        50%;
+
+      transform:
+        translateX(-50%);
+
+      display:
+        flex;
+
+      gap:
+        var(--menu-spacing);
+
+      z-index:
+        30;
+
+      transition:
+        transform var(--menu-transition),
+        opacity var(--menu-transition);
+    }
+
+
+    /* =========================================================
+       MENU BUTTON
+       ========================================================= */
+
+    .menu button {
+
+      position:
+        relative;
+
+      appearance:
+        none;
+
+      border:
+        0;
+
+      background:
+        transparent;
+
+      /*
+        DOUBLE THE ORIGINAL PADDING
+      */
+
+      padding:
+        var(--menu-padding-vertical)
+        var(--menu-padding-horizontal);
+
+      margin:
+        0;
+
+      color:
+        var(--text);
+
+      font:
+        inherit;
+
+      font-size:
+        var(--menu-size);
+
+      line-height:
+        1.2;
+
+      cursor:
+        pointer;
+
+      transition:
+        color 250ms ease,
+        transform 250ms ease;
+    }
+
+
+    .menu button:hover {
+
+      transform:
+        translateY(-2px);
+    }
+
+
+    /* =========================================================
+       SELECTED MENU ITEM — RHOMBUS
+       ========================================================= */
+
+    .menu button::before {
+
+      content:
+        "";
+
+      position:
+        absolute;
+
+      z-index:
+        -1;
+
+      top:
+        0;
+
+      right:
+        0;
+
+      bottom:
+        0;
+
+      left:
+        0;
+
+      background:
+        var(--menu-active-blue);
+
+      clip-path:
+        polygon(
+          var(--menu-rhombus-angle) 0%,
+          100% 0%,
+          calc(100% - var(--menu-rhombus-angle)) 100%,
+          0% 100%
+        );
+
+      opacity:
+        0;
+
+      transition:
+        opacity 250ms ease;
+    }
+
+
+    .menu button.selected {
+
+      color:
+        var(--menu-active-text);
+    }
+
+
+    .menu button.selected::before {
+
+      opacity:
+        1;
+    }
+
+
+    /* =========================================================
+       TITLE
+       ========================================================= */
+
+    .title {
+
+      position:
+        absolute;
+
+      left:
+        50%;
+
+      bottom:
+        var(--title-bottom-desktop);
+
+      transform:
+        translateX(-50%)
+        scaleX(1.10);
+
+      transform-origin:
+        center bottom;
+
+      margin:
+        0;
+
+      font-size:
+        var(--title-size-desktop);
+
+      line-height:
+        0.72;
+
+      font-weight:
+        900;
+
+      font-style:
+        italic;
+
+      letter-spacing:
+        -0.06em;
+
+      white-space:
+        nowrap;
+
+      z-index:
+        30;
+
+      user-select:
+        none;
+
+      pointer-events:
+        none;
+    }
+
+
+    /* =========================================================
+       BACK ARROW
+       =========================================================
+
+       Hidden on desktop.
+       ========================================================= */
+
+    .back-button {
+
+      display:
+        none;
+
+      appearance:
+        none;
+
+      border:
+        0;
+
+      background:
+        transparent;
+
+      color:
+        var(--text);
+
+      padding:
+        0;
+
+      margin:
+        0 0 2rem 0;
+
+      font:
+        inherit;
+
+      font-size:
+        1.3rem;
+
+      line-height:
+        1;
+
+      cursor:
+        pointer;
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
 
     @media (max-width: 768px) {
-      .desktop {
-        display: none;
+
+
+      /* =======================================================
+         MOBILE MENU
+         ======================================================= */
+
+      .menu {
+
+        top:
+          1.5rem;
+
+        left:
+          0.3rem;
+
+        bottom:
+          auto;
+
+        transform:
+          translateX(0);
+
+        display:
+          flex;
+
+        flex-direction:
+          column;
+
+        gap:
+          1.5rem;
+
+        align-items:
+          flex-start;
+
+        /*
+          Used when initially leaving the page.
+        */
+
+        transition:
+          transform var(--menu-transition),
+          opacity var(--menu-transition);
       }
 
-      .mobile {
-        display: block;
+
+      .menu button {
+
+        font-size:
+          1rem;
+
+        padding:
+          var(--menu-padding-vertical)
+          var(--menu-padding-horizontal);
       }
+
+
+      /*
+        No blue rhombus on mobile.
+      */
+
+      .menu button.selected {
+
+        color:
+          var(--text);
+      }
+
+
+      .menu button.selected::before {
+
+        opacity:
+          0;
+      }
+
+
+      /* =======================================================
+         MOBILE MENU — LEAVE LEFT
+         ======================================================= */
+
+      .menu.mobile-hidden {
+
+        transform:
+          translateX(
+            calc(-100vw - 2rem)
+          );
+
+        opacity:
+          0;
+
+        pointer-events:
+          none;
+      }
+
+
+      /* =======================================================
+         MOBILE MENU — FADE BACK IN
+         =======================================================
+
+         IMPORTANT:
+
+         There is deliberately NO transform here.
+
+         The menu returns to its normal position first,
+         then fades from invisible → visible.
+         ======================================================= */
+
+      .menu.menu-fading-in {
+
+        transform:
+          translateX(0);
+
+        opacity:
+          0;
+
+        pointer-events:
+          none;
+
+        transition:
+          opacity var(--menu-return-fade);
+      }
+
+
+      /* =======================================================
+         MOBILE TITLE
+         ======================================================= */
+
+      .title {
+
+        left:
+          50%;
+
+        bottom:
+          var(--title-bottom-mobile);
+
+        transform:
+          translateX(-50%)
+          scaleX(1.10);
+
+        transform-origin:
+          center bottom;
+
+        font-size:
+          var(--title-size-mobile);
+
+        line-height:
+          0.72;
+
+        letter-spacing:
+          -0.06em;
+      }
+
+
+      /* =======================================================
+         MOBILE CONTENT PAGE
+         ======================================================= */
+
+      .content-page {
+
+        position:
+          absolute;
+
+        inset:
+          0;
+
+        width:
+          100vw;
+
+        max-width:
+          100vw;
+
+        height:
+          100%;
+
+        overflow-y:
+          auto;
+
+        overflow-x:
+          hidden;
+
+        padding:
+          var(--mobile-content-padding-top)
+          var(--mobile-content-padding-right)
+          var(--mobile-content-padding-bottom)
+          var(--mobile-content-padding-left);
+
+
+        /*
+          INITIAL POSITION:
+          outside viewport on the RIGHT.
+        */
+
+        transform:
+          translateX(100%);
+
+        opacity:
+          0;
+
+        visibility:
+          hidden;
+
+        pointer-events:
+          none;
+
+        z-index:
+          20;
+
+        transition:
+          transform 700ms
+          cubic-bezier(.77, 0, .175, 1),
+
+          opacity 1000ms ease,
+
+          visibility 700ms ease;
+      }
+
+
+      /* =======================================================
+         MOBILE CONTENT — ENTER
+         ======================================================= */
+
+      .content-page.active {
+
+        transform:
+          translateX(0);
+
+        opacity:
+          1;
+
+        visibility:
+          visible;
+
+        pointer-events:
+          auto;
+      }
+
+
+      /* =======================================================
+         MOBILE CONTENT — LEAVE LEFT
+         ======================================================= */
+
+      .content-page.leaving-left {
+
+        transform:
+          translateX(-100%);
+
+        opacity:
+          0;
+
+        visibility:
+          visible;
+
+        pointer-events:
+          none;
+
+        transition:
+          transform 650ms
+          cubic-bezier(.77, 0, .175, 1),
+
+          opacity 650ms ease;
+      }
+
+
+      /* =======================================================
+         MOBILE CONTENT INNER
+         ======================================================= */
+
+      .content-inner {
+
+        width:
+          100%;
+
+        max-width:
+          100%;
+
+        overflow-wrap:
+          break-word;
+
+        word-wrap:
+          break-word;
+
+        font-size:
+          var(--mobile-content-size);
+
+        line-height:
+          1.5;
+      }
+
+
+      .content-inner img,
+      .content-inner video,
+      .content-inner iframe {
+
+        max-width:
+          100%;
+
+        height:
+          auto;
+      }
+
+
+      /* =======================================================
+         MOBILE BACK ARROW
+         ======================================================= */
+
+      .back-button {
+
+        display:
+          block;
+
+        margin:
+          0 0 2rem 0;
+
+        font-size:
+          1.3rem;
+      }
+
     }
+
+
+    /* =========================================================
+       REDUCED MOTION
+       ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+
+        transition-duration:
+          0.01ms !important;
+      }
+
+    }
+
   </style>
 </head>
 
+
 <body>
 
-  <div id="debug"></div>
+	<div id="viewport-debug"></div>
 
-  <h1 class="desktop">
-    DESKTOP
-  </h1>
+<script>
+(function () {
 
-  <h1 class="mobile">
-    MOBILE
-  </h1>
+  const viewportMeta =
+    document.querySelector('meta[name="viewport"]');
+
+  if (!viewportMeta) return;
+
+
+  /*
+   * Remember the healthy viewport width.
+
+   * On your iPhone this should be approximately:
+   * 390px
+   *
+   * If Safari suddenly reports something like:
+   * 980px
+   * while screen.width remains 390px,
+   * we know WebKit has fallen back to its
+   * legacy desktop viewport.
+   */
+
+  let healthyWidth = window.innerWidth;
+
+
+  /*
+   * Don't treat the initial 980px value as healthy.
+   *
+   * screen.width gives us the physical CSS-pixel width
+   * of the device.
+   */
+
+  if (
+    window.innerWidth > screen.width * 1.5
+  ) {
+    healthyWidth = screen.width;
+  }
+
+
+  function recoverViewport() {
+
+    const currentWidth =
+      window.innerWidth;
+
+    const deviceWidth =
+      screen.width;
+
+
+    /*
+     * Detect the abnormal condition:
+     *
+     * iPhone reports 390px physical width,
+     * but Safari reports 980px layout width.
+     */
+
+    const viewportIsBroken =
+      currentWidth > deviceWidth * 1.5;
+
+
+    if (!viewportIsBroken) {
+
+      /*
+       * This is a healthy measurement.
+       */
+
+      healthyWidth =
+        currentWidth;
+
+      return;
+    }
+
+
+    /*
+     * Temporarily simplify the viewport declaration.
+     *
+     * This forces WebKit to reconsider the viewport.
+     */
+
+    viewportMeta.setAttribute(
+      "content",
+      "width=device-width, initial-scale=1"
+    );
+
+
+    /*
+     * Give WebKit a moment to recalculate,
+     * then restore the preferred declaration.
+     */
+
+    setTimeout(function () {
+
+      viewportMeta.setAttribute(
+        "content",
+        "width=device-width, initial-scale=1, viewport-fit=cover"
+      );
+
+    }, 50);
+
+  }
+
+
+  /*
+   * Check once shortly after the page loads.
+   */
+
+  setTimeout(
+    recoverViewport,
+    100
+  );
+
+
+  /*
+   * Check whenever Safari reports a resize.
+   */
+
+  window.addEventListener(
+    "resize",
+    recoverViewport
+  );
+
+
+  /*
+   * Safari can trigger this problem when the page
+   * returns from the background.
+   *
+   * This catches that situation too.
+   */
+
+  document.addEventListener(
+    "visibilitychange",
+    function () {
+
+      if (
+        document.visibilityState === "visible"
+      ) {
+
+        setTimeout(
+          recoverViewport,
+          100
+        );
+
+      }
+
+    }
+  );
+
+
+})();
+</script>
+
+  <main class="page">
+
+
+    <!-- =======================================================
+         CONTENT PAGE
+         ======================================================= -->
+
+    <section
+      class="content-page"
+      id="contentPage"
+    >
+
+      <div class="content-inner">
+
+
+        <!--
+          Hidden on desktop.
+          Visible on mobile.
+        -->
+
+        <button
+          class="back-button"
+          id="backButton"
+          aria-label="Return to menu"
+        >
+          ←
+        </button>
+
+
+        <!-- Selected content appears here -->
+
+        <div id="content">
+        </div>
+
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         MENU
+         ======================================================= -->
+
+    <nav
+      class="menu"
+      id="menu"
+    >
+
+      <button data-section="about">
+        about
+      </button>
+
+      <button data-section="work">
+        sound
+      </button>
+
+      <button data-section="contact">
+        contact
+      </button>
+
+    </nav>
+
+
+    <!-- =======================================================
+         TITLE
+         ======================================================= -->
+
+    <h1 class="title">
+      Andreo
+    </h1>
+
+
+  </main>
+
 
   <script>
-    const debug = document.getElementById("debug");
 
-    debug.innerHTML =
-      "innerWidth: " + window.innerWidth +
-      "<br>innerHeight: " + window.innerHeight +
-      "<br>CSS mobile: " +
-      window.matchMedia("(max-width: 768px)").matches +
-      "<br>screen.width: " + screen.width +
-      "<br>devicePixelRatio: " + window.devicePixelRatio;
+
+    /* =========================================================
+       CONTENT
+       =========================================================
+
+       Replace these examples with your actual content.
+
+       HTML is allowed inside each section.
+       ========================================================= */
+
+    const contentData = {
+
+      about: `
+        <font color="777777">
+	<p>
+	Violinist on Ngunnawal country.
+	</p>
+
+        <p>
+	After 15+ years experience in commercial music performance&mdash;from the <i>Bee Gees</i> to <i>The Phantom of the Opera</i> and 2 years touring with a <a href="https://youtu.be/fy7F1f_sO3E?si=gW0SHWK7OhuGrkbL" target="_blank" rel="noopener noreferrer" style="color: grey;">pop rock band</a>, to countless corporate events and television appearances (inc. one for <i>Netflix</i>)&mdash;</font>I am now <b>primarily seeking creative alignment</b>.
+        </p>
+
+	<p>
+	<font color="777777">Currently, my interest is in soul, rock, electronic, experimental, world, folk, R&B and metal.</font>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	</p>
+
+      `,
+
+
+      work: `
+
+        <p>
+	TBD
+        </p>
+
+      `,
+
+
+      contact: `
+        <p>
+        hello@andreo.com.au
+        </p>
+
+	<p>
+	@helloandreo
+	</p>
+      `
+
+    };
+
+
+    /* =========================================================
+       ELEMENTS
+       ========================================================= */
+
+    const menu =
+      document.getElementById(
+        "menu"
+      );
+
+    const menuButtons =
+      document.querySelectorAll(
+        ".menu button"
+      );
+
+    const contentPage =
+      document.getElementById(
+        "contentPage"
+      );
+
+    const content =
+      document.getElementById(
+        "content"
+      );
+
+    const backButton =
+      document.getElementById(
+        "backButton"
+      );
+
+
+    /* =========================================================
+       MOBILE DETECTION
+       ========================================================= */
+
+    function isMobile() {
+
+       return window.matchMedia("(max-width: 768px)").matches;
+
+    }
+
+
+    /* =========================================================
+       OPEN CONTENT
+       ========================================================= */
+
+    function openContent(
+      section,
+      selectedButton
+    ) {
+
+
+      /*
+        Insert requested content.
+      */
+
+      content.innerHTML =
+        contentData[section];
+
+
+      /* =======================================================
+         DESKTOP
+         ======================================================= */
+
+      if (!isMobile()) {
+
+
+        /*
+          Remove previous selection.
+        */
+
+        menuButtons.forEach(
+          button => {
+
+            button.classList.remove(
+              "selected"
+            );
+
+          }
+        );
+
+
+        /*
+          Select clicked item.
+
+          This activates the blue rhombus.
+        */
+
+        selectedButton.classList.add(
+          "selected"
+        );
+
+
+        /*
+          Fade content in.
+        */
+
+        contentPage.classList.add(
+          "active"
+        );
+
+      }
+
+
+      /* =======================================================
+         MOBILE
+         ======================================================= */
+
+      else {
+
+
+        /*
+          Make sure any previous return state is gone.
+        */
+
+        menu.classList.remove(
+          "menu-fading-in"
+        );
+
+
+        /*
+          Menu leaves to the LEFT.
+        */
+
+        menu.classList.add(
+          "mobile-hidden"
+        );
+
+
+        /*
+          Give the menu time to leave before content enters.
+        */
+
+        setTimeout(
+          () => {
+
+            contentPage.classList.add(
+              "active"
+            );
+
+          },
+          350
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       MENU BUTTON EVENTS
+       ========================================================= */
+
+    menuButtons.forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const section =
+              button.dataset.section;
+
+            openContent(
+              section,
+              button
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =========================================================
+       MOBILE BACK ARROW
+       =========================================================
+
+       NEW RETURN SEQUENCE:
+
+       1. Content slides LEFT.
+       2. Content finishes leaving.
+       3. Menu's mobile-hidden state is removed.
+       4. Menu is at its NORMAL position but invisible.
+       5. Menu fades in.
+
+       There is NO right-to-left menu movement anymore.
+       ========================================================= */
+
+    backButton.addEventListener(
+      "click",
+      () => {
+
+
+        if (!isMobile()) {
+          return;
+        }
+
+
+        /* -----------------------------------------------------
+           STEP 1
+
+           Content begins leaving LEFT.
+           ----------------------------------------------------- */
+
+        contentPage.classList.add(
+          "leaving-left"
+        );
+
+
+        /*
+          Force layout so the browser registers the
+          starting position.
+        */
+
+        void contentPage.offsetWidth;
+
+
+        /*
+          Remove active state.
+
+          Because .leaving-left is still present, the
+          content moves LEFT rather than RIGHT.
+        */
+
+        contentPage.classList.remove(
+          "active"
+        );
+
+
+        /* -----------------------------------------------------
+           STEP 2
+
+           Wait for content to finish leaving.
+           ----------------------------------------------------- */
+
+        setTimeout(
+          () => {
+
+
+            /*
+              Remove the class that had moved the menu
+              off-screen LEFT.
+            */
+
+            menu.classList.remove(
+              "mobile-hidden"
+            );
+
+
+            /*
+              Put menu at its normal position, but invisible.
+            */
+
+            menu.classList.add(
+              "menu-fading-in"
+            );
+
+
+            /*
+              Force layout so the browser recognises
+              opacity: 0 at the normal position.
+            */
+
+            void menu.offsetWidth;
+
+
+            /*
+              Remove fading state.
+
+              Menu now fades:
+
+                  opacity 0 → 1
+
+              while staying stationary.
+            */
+
+            menu.classList.remove(
+              "menu-fading-in"
+            );
+
+
+            /*
+              Clean up the temporary content state.
+            */
+
+            contentPage.classList.remove(
+              "leaving-left"
+            );
+
+
+          },
+          650
+        );
+
+      }
+    );
+
+
+    /* =========================================================
+       WINDOW RESIZE
+       ========================================================= */
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+
+        /*
+          Reset content.
+        */
+
+        contentPage.classList.remove(
+          "active"
+        );
+
+        contentPage.classList.remove(
+          "leaving-left"
+        );
+
+
+        /*
+          Reset menu.
+        */
+
+        menu.classList.remove(
+          "mobile-hidden"
+        );
+
+        menu.classList.remove(
+          "menu-fading-in"
+        );
+
+
+        /*
+          Reset selected state.
+        */
+
+        menuButtons.forEach(
+          button => {
+
+            button.classList.remove(
+              "selected"
+            );
+
+          }
+        );
+
+      }
+    );
+
+
   </script>
 
 </body>
